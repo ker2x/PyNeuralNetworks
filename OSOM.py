@@ -1,11 +1,11 @@
-#from __future__ import division
-from Numeric import *
-#from MA import *
-from RandomArray import *
 import time
+from Numeric import *
+from RandomArray import *
 from pylab import * # matplotlib
 
-
+# Unused
+#from __future__ import division
+#from MA import *
 
 class SOM:
     def __init__(self,size_I=10,size_J=20,size_K=10):
@@ -19,7 +19,7 @@ class SOM:
         #self.W            = array(uniform(-1000,1000,(self.I,self.J,self.K)),mask=mascara )
         self.W            = uniform(-1000,1000,(self.I,self.J,self.K))
         
-        # array of standar deviations
+        # array of standard deviations
         #self.S            = uniform(10.0,20,(self.I,self.J,self.K)).astype(float)
         self.S            = ones((self.I,self.J,self.K)).astype(float)+20.0        
         self.Y            = zeros((self.I,self.J)).astype(float)
@@ -97,7 +97,6 @@ class SOM:
         self.Y  = product(self.Gauss(self.W,self.S,X),2)        
         #self.Y  = average(self.Gauss(self.W,self.S,X),2)
         
-        
         #find the winning neuron
         self.NeuroWinner()
         
@@ -117,10 +116,8 @@ class SOM:
         
         
     def Print(self,X):
-        #print "Entrada:                   " ,X
         print "the winning neuron is :    " ,[self.i_min,self.j_min]
         print "with vector : " , self.W[self.i_min,self.j_min,]
-        #print "Ratio,T,Alpha",self.Ratio,self.T,self.Alpha
                    
     def Train(self,X,N=1000):
         # X  is an array of training vector
@@ -155,23 +152,22 @@ def SOP(nxgrid,nygrid,Xinput,Niter=100):
     return clases,centroids,activations
 
 
+# Draw graphs
 def PlotAct(ZMaps,vectors):    
     
+    #window with smalls graphs
     figure(1)
-
     N=ZMaps[0].shape[0]
     M=ZMaps[0].shape[1]
     ZTotal=ZMaps[0]
     for i in range(len(ZMaps)):        
         subplot(len(ZMaps)/2,2,i+1)
-        #im = imshow(-ZMaps[i], interpolation='bilinear', origin='lower',cmap=cm.gray, extent=(0,N,0,M))
         im = imshow(-ZMaps[i],interpolation='spline36', origin='lower',cmap=cm.gray, extent=(0,N,0,M))
         hot()
-        #axis('off')
         ZTotal=maximum(ZTotal,ZMaps[i])
-        #colorbar()
         #title('vector: '+str(vectors[i]))
 
+    #2nd window with 1 big graph
     figure(2)
     im = imshow(-ZTotal,interpolation='spline36', origin='lower',cmap=cm.gray, extent=(0,N,0,M))
     hot()
@@ -193,14 +189,16 @@ def PruebaSOM2():
                    [253,253,256,257],
                    ]).astype(float)
 
-   
     ActMaps=[]
     vectors=[]
+
     clases = zeros((Entrada.shape[0],2)).astype(float)
     centroids = zeros((Entrada.shape[0],Entrada.shape[1])).astype(float)
     activations = zeros(Entrada.shape[0]).astype(float)
+
     NET=SOM(40,40,Entrada.shape[1])
     NET.Train(Entrada,100)
+
     for i in range(Entrada.shape[0]):
         c  = NET.ClasifyPattern(Entrada[i])
         clases[i,0]    = c[0]
@@ -210,12 +208,11 @@ def PruebaSOM2():
         print Entrada[i], clases[i,:],centroids[i,:],activations[i]
         ActMaps.append(NET.Y)
         vectors.append(Entrada[i])
-           
 
     PlotAct(ActMaps,vectors)
     
     
-
+'''
 def PruebaSOM1():
     
     Entrada=array([
@@ -232,19 +229,14 @@ def PruebaSOM1():
                    [253,253,256,257],
                    ]).astype(float)
 
-    
-
-
-
     t1=time.clock()
     clases,centroids,act = SOP(10,10,Entrada,100)    
     t2=time.clock()
     print "SOM: trining time :",t2-t1
     
-    
     for i in range(Entrada.shape[0]):      
       print Entrada[i], clases[i,:],centroids[i,:],act[i]
-
+'''
 
     
     
