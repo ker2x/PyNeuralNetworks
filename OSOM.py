@@ -51,12 +51,12 @@ class SOM:
         return exp ( - ((x-mu)/s)**2.0 )
 
     def alpha(self):
-        #Ritmo de Aprendizaje
+        #Learning Rate
         self.Alpha = self.Alpha0 *  ( 1.0 - ( float(self.T) / self.N_Iterations) )       
         return self.Alpha
     
     def R(self):
-        #Radio de Vecindad
+        #Neigbourhood ratio
         self.Ratio = self.Ratio0 *  ( 1.0 - ( float(self.T) / self.N_Iterations) )
         return self.Ratio
 
@@ -72,7 +72,7 @@ class SOM:
         return x*y
     
     def H_i_g(self):
-        # actualiza el radio de vecindad
+        # Actualize Neigbourhood ratio
         #self.H = fromfunction( self.dist , (self.I,self.J,self.K))
         #R = self.R()                
         #self.H = where (self.H <= R,1.0/(1.0+tanh(self.H)),0)
@@ -80,7 +80,7 @@ class SOM:
         self.HS = where (self.H > 0,self.H,1)
         
     def NeuroWinner(self):
-        #Determinar la Neurona Ganadora
+        #find the winning neuron
         pos              = argmax(self.Y.flat)
         #pos             = argmin(self.Y.flat)
         #print "max,min",max(self.Y.flat),min(self.Y.flat)
@@ -92,38 +92,38 @@ class SOM:
 
         
     def Propagate(self,X):        
-        #Calcular la Distancia Euclidea
+        #Compute euclidian distance
         #self.Y  = sqrt(sum((self.W-X)*(self.W-X),2))
         self.Y  = product(self.Gauss(self.W,self.S,X),2)        
         #self.Y  = average(self.Gauss(self.W,self.S,X),2)
         
         
-        #Determinar la Neurona Ganadora
+        #find the winning neuron
         self.NeuroWinner()
         
     def Learn(self,X):
-        #Actulizar la matriz H
+        #Actulize the matrix H
         self.H_i_g()        
-        #Actualizar Pesos        
+        #Actualize Weight        
         self.W=self.W + self.alpha() * self.H * ( X - self.W)               
-        #Actualizar desviaciones
+        #Actualize deviation
         #self.S = self.S * self.H
         #self.S[self.i_min,self.j_min]=self.S[self.i_min,self.j_min]+ 2*self.Y[self.i_min,self.j_min]
         #self.S = where(self.S<1.0,1,self.S)
-        # Evolucion
-        # Mutacion de la mascara
+        # Evolution
+        # Mutation de la mascara
         # Mutacion de valores
         # Cruzamiento de nodos  (valores y mascaras)
         
         
     def Print(self,X):
         #print "Entrada:                   " ,X
-        print "La Neurona Ganadora es:    " ,[self.i_min,self.j_min]
-        print "Con Vector Caracteristico: " , self.W[self.i_min,self.j_min,]
+        print "the winning neuron is :    " ,[self.i_min,self.j_min]
+        print "with vector : " , self.W[self.i_min,self.j_min,]
         #print "Ratio,T,Alpha",self.Ratio,self.T,self.Alpha
                    
     def Train(self,X,N=1000):
-        # X es un array de vectores de entrenamiento
+        # X  is an array of training vector
         self.N_Iterations   = N
         num_samples_vectors = X.shape[0]
         self.T              = 0
