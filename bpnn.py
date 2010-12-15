@@ -3,7 +3,11 @@
 # Written in Python.  See http://www.python.org/
 # Placed in the public domain.
 # Neil Schemenauer <nas@arctrix.com>
+#
+# Modified by Laurent "ker2x" Laborde <kerdezixe@gmail.com> - 2010
+#
 
+import getopt, sys
 import math
 import random
 import string
@@ -145,11 +149,11 @@ class NN:
                 targets = p[1]
                 self.update(inputs)
                 error = error + self.backPropagate(targets, N, M)
-            if i % 1000 == 0:
-                print('error %-.5f' % error)
+            if i % 100 == 0:
+                print('error %-.10f' % error)
 
 
-def demo():
+def demo(hiddenNN, iterations):
     # Teach network XOR function
     pat = [
         [[0,0], [0]],
@@ -159,13 +163,35 @@ def demo():
     ]
 
     # create a network with two input, two hidden, and one output nodes
-    n = NN(2, 2, 1)
+    n = NN(2, hiddenNN, 1)
     # train it with some patterns
-    n.train(pat,100000)
+    n.train(pat,iterations)
     # test it
     n.test(pat)
 
-
+def usage():
+    print "-i --iterations : number of iterations"
+    print "-d --hidden     : umber of hidden neurons"
+    sys.exit(2)
 
 if __name__ == '__main__':
-    demo()
+	#Handle arguments with getopt
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hd:i:", ["help", "hidden=", "iterations="])
+    except getopt.GetoptError, err:
+        print str(err)
+        usage()
+
+    hiddenN = 2
+    iterations = 1000
+
+    for o,a in opts:
+        if o in ("-d", "--hidden"):
+            hiddenN = int(a)
+        elif o in ("-i", "--iterations"):
+            iterations = int(a)
+        elif o in("-h", "--help"):
+            usage()
+        else:
+            usage()
+    demo(hiddenN, iterations)
